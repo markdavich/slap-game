@@ -1,4 +1,5 @@
 #battle-arena {
+  opacity: 0;
   position: relative;
   overflow: hidden;
   width: 400px !important;
@@ -7,8 +8,15 @@
   background-image: url('./images/human-attack-base.png')
 }
 
+.couch {
+  background-position: center;
+  background-image: url('./images/couch.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
 .test {
-  border: solid salmon 1px;
+  /* border: solid salmon 1px; */
 }
 
 .player {
@@ -18,9 +26,14 @@
   margin-top: 10px;
 }
 
-.human {
+.cat {
   background-size: contain;
   background-image: url('./images/human-attack-base.png')
+}
+
+.human {
+  background-size: contain;
+  background-image: url('./images/human.png')
 }
 
 .pet {
@@ -32,11 +45,34 @@
 }
 
 .push-down {
+  left: 150px !important;
   background-image: url('./images/push-down.png');
 }
 
 .grab {
+  left: 50px !important;
   background-image: url('./images/grab.png');
+}
+
+/* Car */
+.scratch {
+  left: 123px !important;
+  background-image: url('./images/scratch.png');
+}
+
+.bite {
+  left: 123px !important;
+  background-image: url('./images/bite.png');
+}
+
+.cat-grab {
+  left: 123px !important;
+  background-image: url('./images/cat-grab.png');
+}
+
+.grab-and-kick {
+  left: 123px !important;
+  background-image: url('./images/grab-kick.png');
 }
 
 #attack-object {

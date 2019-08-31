@@ -4,8 +4,7 @@ let bushImage = document.getElementById('brush')
 
 const IMG = {
   BA_CAT: './images/human-attack-base.png',
-  BA_HUMAN: '',
-  BA_HAND: './images/hand.png'
+  BA_HUMAN: './images/human.png'
 }
 
 /**
@@ -93,8 +92,14 @@ class Player {
     this._modifiers = newValue
   }
 
-  attack(opponent) {
+  attack(type) {
+    $('#attack-object').attr('class', type)
 
+    $('#attack-object')
+      .animate({ top: '88px' }, 500)
+      .animate({ top: '-88px' }, 500)
+    
+    $('#battle-arena').delay(750).animate({ opacity: '0' }, 250)
   }
 }
 
@@ -107,7 +112,7 @@ class Cat extends Player {
     this._attacks = {
       scratch: { damage: 20, url: '' },
       bite: { damage: 15, url: '' },
-      grab: { damage: 30, url: '' },
+      catGrab: { damage: 30, url: '' },
       grabAndKick: { damage: 40, url: '' }
     }
     this._modifier = {
@@ -170,19 +175,7 @@ class Human extends Player {
       )
     }
   }
-  attack(type) {
-    $('#attack-object').attr('class', type)
-
-    $('#attack-object')
-      .animate({ top: '88px' }, 500)
-      .animate({ top: '-88px' }, 500)
-  }
 }
-
-function properCase(str) {
-
-}
-
 
 
 let cat = new Cat('Tom', 100)
@@ -199,6 +192,7 @@ function setBattleArenaImage(attacker) {
   }
 
   battleArena.style.backgroundImage = `url('${url}')`
+  $('#battle-arena').animate({opacity: '1'}, 250)
 }
 
 function attack(event, attacker, type) {
@@ -206,14 +200,14 @@ function attack(event, attacker, type) {
 
   setBattleArenaImage(attacker)
 
+
+
   switch (attacker) {
     case 'human':
       human.attack(type)
       break
     case 'cat':
-      switch (type) {
-
-      }
+      cat.attack(type)
       break
   }
 }
