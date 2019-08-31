@@ -1,4 +1,50 @@
-.image-area {
-  width: 200px;
-  height: 100%;
+#battle-arena {
+  position: relative;
+  overflow: hidden;
+  width: 400px !important;
+  height: 400px !important;
+  margin: auto;
+  background-image: url('./images/human-attack-base.png')
+}
+
+.test {
+  border: solid salmon 1px;
+}
+
+.player {
+  margin: auto;
+  height: 200px !important;
+  width: 200px !important;
+  margin-top: 10px;
+}
+
+.human {
+  background-size: contain;
+  background-image: url('./images/human-attack-base.png')
+}
+
+.pet {
+  background-image: url('./images/hand.png');
+}
+
+.brush {
+  background-image: url('./images/brush.png');
+}
+
+.push-down {
+  background-image: url('./images/push-down.png');
+}
+
+.grab {
+  background-image: url('./images/grab.png');
+}
+
+#attack-object {
+  height: 88px !important;
+  width: 100%;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: -88px;
+  left: 0px;
+  background-size: contain;
 }

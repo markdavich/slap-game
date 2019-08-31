@@ -16,36 +16,43 @@
   <title>Slap Game</title>
 </head>
 
-<body class="image-area">
-  <header>
-    <span>
-      Health:<span id="health">--</span>
-      Name:<span id="name">--</span>
-      Hits:<span id="hits">--</span>
-    </span>
-  </header>
-  <img class="image-area"
-    src="https://www.marinabaysands.com/content/dam/singapore/marinabaysands/master/main/home/sg-visitors-guide/blue-sky-clouds_1000x557.jpg"
-    alt="">
-  <footer>
-    <button class="btn btn-primary" onclick="slap()">Slap</button>
-    <button class="btn" onclick="punch()">Punch</button>
-    <button class="btn" onclick="kick()">Kick</button>
-  </footer>
+<body>
 
+  <div class="container-fluid">
+    <div class="row">
+      <div class="test col-md-3">
+        <div class="card"">
+          <div id="human" class="player human"></div>
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+              content.
+            </p>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button onclick="attack(event, 'human', 'pet')" type="button" class="btn btn-secondary">Pet</button>
+              <button onclick="attack(event, 'human', 'brush')" type="button" class="btn btn-secondary">Brush</button>
+              <button onclick="attack(event, 'human', 'grab')" type="button" class="btn btn-secondary">Grab</button>
+              <button onclick="attack(event, 'human', 'push-down')" type="button" class="btn btn-secondary">Push Down</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="test col-md-6">
+        <div id="battle-arena">
+          <div id="attack-object"></div>
+        </div>
+      </div>
+      <div class="test col-md-3"></div>
+    </div>
+  </div>
+
+
+
+  <!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <!-- My JavaScript -->
   <script src="game.js"></script>
-
-  <!-- Bootstrap -->
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script>
 </body>
 
 </html>
