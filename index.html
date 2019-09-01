@@ -54,42 +54,42 @@
           </div>
         </div>
       </div>
-      <div id="attack-row" class="row d-flex">
-        <div id="attack-sentance" class="col d-flex">
+      <div id="attack-row" class="row">
+        <div id="attack-sentance" class="col">
           <!-- Attack description injected here -->
         </div>
       </div>
     </div>
     <!-- ================================= Cat Column ============================================-->
-    <div class="test col-md-3">
-      <div class="card border-0"">
+    <div class=" test col-md-3">
+          <div class="card border-0"">
           <div id=" human cat" class="player cat">
-        <!-- Cat Picture -->
-      </div>
-      <div class="card-body">
-        <h5 id="cat-title" class="card-title">Cat</h5>
-        <div id="cat-defense" class="">
-          <!-- Cat Mod Defense Sentance Injected Here -->
+            <!-- Cat Picture -->
+          </div>
+          <div class="card-body">
+            <h5 id="cat-title" class="card-title">Cat</h5>
+            <div id="cat-defense" class="">
+              <!-- Cat Mod Defense Sentance Injected Here -->
+            </div>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button onclick="attack(event, 'cat', 'scratch')" type="button" class="btn btn-secondary">Scratch</button>
+              <button onclick="attack(event, 'cat', 'bite')" type="button" class="btn btn-secondary">Bite</button>
+              <button onclick="attack(event, 'cat', 'cat-grab')" type="button" class="btn btn-secondary">Grab</button>
+              <button onclick="attack(event, 'cat', 'grab-and-kick')" type="button" class="btn btn-secondary">Grab &
+                Kick</button>
+            </div>
+          </div>
         </div>
-        <div class="btn-group" role="group" aria-label="Basic example">
-          <button onclick="attack(event, 'cat', 'scratch')" type="button" class="btn btn-secondary">Scratch</button>
-          <button onclick="attack(event, 'cat', 'bite')" type="button" class="btn btn-secondary">Bite</button>
-          <button onclick="attack(event, 'cat', 'cat-grab')" type="button" class="btn btn-secondary">Grab</button>
-          <button onclick="attack(event, 'cat', 'grab-and-kick')" type="button" class="btn btn-secondary">Grab &
-            Kick</button>
+        <div class="row">
+          <div id="cat-mods" class="col">
+            <!-- Cat Mods Injected Here -->
+          </div>
         </div>
       </div>
     </div>
-    <div class="row">
-      <div id="cat-mods" class="col">
-        <!-- Cat Mods Injected Here -->
-      </div>
+    <div class="row justify-content-center">
+      Win games to unlock powers
     </div>
-  </div>
-  </div>
-  <div class="row justify-content-center">
-    Win games to unlock powers
-  </div>
   </div>
   <!-- jquery -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"

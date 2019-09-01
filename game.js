@@ -251,20 +251,10 @@ class Player {
     let theirSide
 
     if (this._name === 'Human') {
-      mySide = 'justify-content-start'
-      theirSide = 'justify-content-end'
+      document.getElementById('attack-sentance').style.textAlign = 'left'
     } else {
-      mySide = 'justify-content-end'
-      theirSide = 'justify-content-start'
+      document.getElementById('attack-sentance').style.textAlign = 'right'
     }
-
-    $('#attack-sentance').removeClass(theirSide)
-    $('#attack-sentance').addClass(mySide)
-    $('#attack-row').removeClass(theirSide)
-    $('#attack-row').addClass(mySide)
-
-    // Clear the last attack sentance in the arean
-    // $('#attack-sentance').animate({ opacity: '0' }, 250)
 
     let attackValues = this._attacks[type]
 
@@ -285,7 +275,7 @@ class Player {
       this._winCount++
       this._health = 100
       opponent.health = 100
-      modValues.template += `<br><h2>${this._name} Wins!</h2>`
+      modValues.template += `<h2>${this._name} Wins!</h2>`
     }
 
     // display opponents defense sentance
