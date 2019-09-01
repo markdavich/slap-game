@@ -252,8 +252,10 @@ class Player {
 
     if (this._name === 'Human') {
       document.getElementById('attack-sentance').style.textAlign = 'left'
+      document.getElementById('attack-row').style.justifyContent = 'flex-start'
     } else {
       document.getElementById('attack-sentance').style.textAlign = 'right'
+      document.getElementById('attack-row').style.justifyContent = 'flex-end'
     }
 
     let attackValues = this._attacks[type]
