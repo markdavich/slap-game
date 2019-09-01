@@ -419,7 +419,7 @@ class Human extends Player {
       ),
       openBox: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Catdoras Box', 15,
-        'Spark the cat\'s curiosity by oening a box.\nWhile the cat is peering into the abyss...', 3, 1, 'openBox'
+        'Spark the cat\'s curiosity by opening a box.\nWhile the cat is peering into the abyss...', 3, 1, 'openBox'
       ),
       sleveDown: new Modifier(
         MODIFIER_TYPE.DEFENSE, 'Armor', 4,
