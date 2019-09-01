@@ -23,6 +23,8 @@ class Modifier {
    * @param {string} shortName The name the user will use to identify the modifier
    * @param {number} value The numerical amount an attack is modified by
    * @param {string} description The short explaination of what the modifier does
+   * @param {number} winsToUse The number of wins a player needs before they can use the modifier
+   * @param {number} allowedUseCount The number of times the player can use the mod
    */
   constructor(modifies, shortName, value, description, winsToUse, allowedUseCount) {
     this._modifies = modifies;
@@ -31,6 +33,7 @@ class Modifier {
     this._description = description;
     this._winsToUse = winsToUse;
     this._allowedUseCount = allowedUseCount;
+    this._totalMods = allowedUseCount;
   }
   /**
    * @returns MODIFIER_TYPE.DEFENSE | MODIFIER_TYPE.OFFENSE
@@ -67,6 +70,25 @@ class Modifier {
     return this._allowedUseCount
   }
 
+  getModValues(winCount, modType) {
+    let result = { template: '', value: 0 }
+
+    if (this._modifies !== modType) {
+      return result
+    }
+
+    if (winCount >= this._winsToUse && this._totalMods) {
+      this._totalMods--
+      return {
+        template: `<p>${this.description} (<b>${this._value}pts</b>)</p>`,
+        value: modType === MODIFIER_TYPE.OFFENSE ?
+          this._value : -this._value
+      }
+    }
+
+    return result
+  }
+
 }
 
 class Player {
@@ -74,10 +96,19 @@ class Player {
     this._name = name;
     this._health = health;
     this._attacks = {}
+    // This is an object that holds four modifiers. Acces them by [key]
     this._modifier = {}
+    /** @type {Array<string>} These are the modiifer keys in use*/
     this._modifiers = []
     this._element = domElement
     this._winCount = 0
+
+    this.setTitle()
+  }
+
+  setTitle() {
+    let id = `${this._name.toLowerCase()}-title`
+    document.getElementById(id).innerText = `${this._name} ${this._health} health pts`
   }
 
   get modifier() {
@@ -103,14 +134,95 @@ class Player {
     this._modifiers = newValue
   }
 
+  get winCount() {
+    return this._winCount
+  }
+
+  addWin() {
+    this._winCount++
+  }
+
+  underGoAttack(damage) {
+    this._health -= damage
+    return this.health
+  }
+
+  getModValues(winCount, modType) {
+    let template = ''
+    let modDamage = 0
+    this._modifiers.forEach(key => {
+      /** @type {Modifier} */
+      let mod = this.modifier[key]
+      if (mod.modifies === MODIFIER_TYPE.OFFENSE) {
+        let modValues = mod.getModValues(winCount, modType)
+        template += modValues.template
+        modDamage += modValues.value
+      }
+    })
+
+    return {
+      template: template,
+      value: modDamage
+    }
+  }
+
+  /**
+   * 
+   * @param {string} type The type of attack
+   * @param {Player} opponent 
+   */
   attack(type, opponent) {
+    $('#attack-sentance')
+      .animate({ opacity: '0' }, 250)
+
+    let attackValues = this._attacks[type]
+
+    let modValues = this.getModValues(
+      this._winCount, MODIFIER_TYPE.OFFENSE
+    )
+
+    let theirModValues = opponent.getModValues(
+      opponent._winCount, MODIFIER_TYPE.DEFENSE
+    )
+
+    modValues.value += attackValues.damage + theirModValues.value
+    modValues.template += `<p><b>${attackValues.description} Total Damage ${modValues.value}</b></p>`
+
+    let defenseId = `#${this._name.toLowerCase()}-defense`
+
+    // dispaly modifier sentance + attack + Calculate total damage
+
+    // display opponents defense sentance
+    $(defenseId)
+      .html(theirModValues.template)
+      .animate({ opacity: '1' }, 250)
+      .delay(4000)
+      .animate({ opacity: '0' }, 250)
+      .html('')
+
+    $('#attack-sentance')
+      .html(modValues.template)
+      .animate({ opacity: '1' }, 250)
+      .delay(3000)
+
+    opponent.underGoAttack(modValues.value)
+
+    if (opponent.health <= 0) {
+      this._winCount++
+      this._health = 100
+      opponent.health = 100
+    }
+
+    this.setTitle()
+    opponent.setTitle()
+
     $('#attack-object').attr('class', type)
 
     $('#attack-object')
       .animate({ top: '88px' }, 700).delay(250)
       .animate({ top: '-88px' }, 700)
 
-    $('#battle-arena').delay(1000).animate({ opacity: '0' }, 250)
+    $('#battle-arena').delay(1500).animate({ opacity: '0' }, 250)
   }
 
   modUnlocked(key) {
@@ -119,21 +231,33 @@ class Player {
       'disabled'
   }
 
-  get Template() {
+  modChecked(key) {
+    return this._modifiers.findIndex(mod => mod === key) > -1 ?
+      'checked' :
+      ''
+  }
+
+  get ModifierTemplate() {
     let template = ''
 
     Object.keys(this._modifier).forEach(key => {
       let mod = this._modifier[key]
       template += `
         <div class="form-check ml-4" style="display: block;">
-          <input onchange="" id="cb-${key}" class="form-check-input" type="checkbox" value="" id="defaultCheck1" ${this.modUnlocked(key)}>
+          <input
+            id="cb-${key}"
+            onchange="onModChange(event, '${this._name}', '${key}')"
+            class="form-check-input"
+            type="checkbox"
+            ${this.modUnlocked(key)}
+            ${this.modChecked(key)}
+          >
           <label class="form-check-label" for="defaultCheck1">
             ${mod.shortName} (${mod.allowedUseCount})
           </label>
         </div>
       `
     })
-
     return template
   }
 
@@ -141,7 +265,7 @@ class Player {
     let modIndex = this._modifiers.findIndex(key => key === modKey)
 
     if (inUse && modIndex === -1) {
-        this._modifiers.push(modKey)
+      this._modifiers.push(modKey)
     } else if (!inUse && modIndex > -1) {
       this._modifiers.splice(modIndex, 1)
     }
@@ -155,27 +279,27 @@ class Cat extends Player {
     this.element = domElement
 
     this._attacks = {
-      scratch: { damage: 20, url: '' },
-      bite: { damage: 15, url: '' },
-      catGrab: { damage: 30, url: '' },
-      grabAndKick: { damage: 40, url: '' }
+      'scratch': { damage: 20, description: 'Scratch!!!' },
+      'bite': { damage: 15, description: 'Bite!!!' },
+      'cat-grab': { damage: 30, description: 'With both paws. Grab!' },
+      'grab-and-kick': { damage: 40, description: 'Grab and Kick!!!' }
     }
     this._modifier = {
       takeSweetTime: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Take Sweet Time', 5,
-        'Irritate the human by testing their patience', 1, 2
+        'Irritate the human by testing their patience then...', 1, 2
       ),
       ignoreHuman: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Ignore Human', 10,
-        'Lower the human\'s confidence by making them feel unimportant', 2, 1
+        'Lower the human\'s confidence by making them feel unimportant, then...', 2, 1
       ),
       purr: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Purrrrrr...', 15,
-        'Make the human totally let their guard down', 3, 1
+        'Make the human totally let their guard down, then...', 3, 1
       ),
       bolt: new Modifier(
         MODIFIER_TYPE.DEFENSE, 'Try to escape', 4,
-        'With no indication... Twist and bolt!', 1, 1
+        'With no indication... Twist and bolt!', 1, 2
       )
     }
   }
@@ -196,23 +320,23 @@ class Human extends Player {
     super(name, health)
 
     this._attacks = {
-      pet: { damage: 20, url: '' },
-      brush: { damage: 15, url: '' },
-      grab: { damage: 30, url: '' },
-      pushDown: { damage: 40, url: '' }
+      'pet': { damage: 20, description: 'Pet the kitty' },
+      'brush': { damage: 15, description: 'Brush the kitty' },
+      'grab': { damage: 30, description: 'Grab the kitty!' },
+      'push-down': { damage: 40, description: 'Smash the kitty' },
     }
     this._modifier = {
       giveCatNip: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Give the kitty some dope', 5,
-        'Subdue the cat with an inhalent', 1, 2
+        'Subdue the cat with an inhalent, then...', 1, 2
       ),
       useLaser: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Use laser pointer', 10,
-        'Immeadiatly divert the cats attention (Fully)', 2, 1
+        'Using a laser pointer, immeadiatly divert the cats attention, then...', 2, 1
       ),
       openBox: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Catdoras Box', 15,
-        'Spark the cat\'s curiosity by oening a box', 3, 1
+        'Spark the cat\'s curiosity by oening a box.\nWhile the cat is peering into the abyss...', 3, 1
       ),
       sleveDown: new Modifier(
         MODIFIER_TYPE.DEFENSE, 'Armor', 4,
@@ -250,22 +374,27 @@ function attack(event, attacker, type) {
       human.attack(type, cat)
       break
     case 'cat':
+      debugger
       cat.attack(type, human)
       break
   }
+
+  drawModifiers()
 }
 
 function drawModifiers() {
-  document.getElementById('human-mods').innerHTML = human.Template
-  document.getElementById('cat-mods').innerHTML = cat.Template
+  document.getElementById('human-mods').innerHTML = human.ModifierTemplate
+  document.getElementById('cat-mods').innerHTML = cat.ModifierTemplate
 }
 
 function onModChange(event, playerName, modKey) {
+  event.preventDefault()
+  let inUse = event.target.checked
   switch (playerName) {
     case 'Cat':
-      cat.useMod(modKey)
+      cat.useMod(inUse, modKey)
     case 'Human':
-      human.useMod(modKey)
+      human.useMod(inUse, modKey)
   }
 }
 

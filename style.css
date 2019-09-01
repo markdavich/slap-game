@@ -8,6 +8,10 @@
   background-image: url('./images/human-attack-base.png')
 }
 
+#attack-sentance{
+  opacity: 0;
+}
+
 .couch {
   background-position: center;
   background-image: url('./images/couch.png');
