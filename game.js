@@ -24,11 +24,13 @@ class Modifier {
    * @param {number} value The numerical amount an attack is modified by
    * @param {string} description The short explaination of what the modifier does
    */
-  constructor(modifies, shortName, value, description) {
+  constructor(modifies, shortName, value, description, winsToUse, allowedUseCount) {
     this._modifies = modifies;
     this._shortName = shortName;
     this._value = value;
     this._description = description;
+    this._winsToUse = winsToUse;
+    this._allowedUseCount = allowedUseCount;
   }
   /**
    * @returns MODIFIER_TYPE.DEFENSE | MODIFIER_TYPE.OFFENSE
@@ -57,6 +59,14 @@ class Modifier {
     return this._description
   }
 
+  get winsToUse() {
+    return this._winsToUse
+  }
+
+  get allowedUseCount() {
+    return this._allowedUseCount
+  }
+
 }
 
 class Player {
@@ -67,6 +77,7 @@ class Player {
     this._modifier = {}
     this._modifiers = []
     this._element = domElement
+    this._winCount = 0
   }
 
   get modifier() {
@@ -92,14 +103,48 @@ class Player {
     this._modifiers = newValue
   }
 
-  attack(type) {
+  attack(type, opponent) {
     $('#attack-object').attr('class', type)
 
     $('#attack-object')
-      .animate({ top: '88px' }, 500)
-      .animate({ top: '-88px' }, 500)
-    
-    $('#battle-arena').delay(750).animate({ opacity: '0' }, 250)
+      .animate({ top: '88px' }, 700).delay(250)
+      .animate({ top: '-88px' }, 700)
+
+    $('#battle-arena').delay(1000).animate({ opacity: '0' }, 250)
+  }
+
+  modUnlocked(key) {
+    return this._winCount >= this._modifier[key].winsToUse ?
+      '' :
+      'disabled'
+  }
+
+  get Template() {
+    let template = ''
+
+    Object.keys(this._modifier).forEach(key => {
+      let mod = this._modifier[key]
+      template += `
+        <div class="form-check ml-4" style="display: block;">
+          <input onchange="" id="cb-${key}" class="form-check-input" type="checkbox" value="" id="defaultCheck1" ${this.modUnlocked(key)}>
+          <label class="form-check-label" for="defaultCheck1">
+            ${mod.shortName} (${mod.allowedUseCount})
+          </label>
+        </div>
+      `
+    })
+
+    return template
+  }
+
+  useMod(inUse, modKey) {
+    let modIndex = this._modifiers.findIndex(key => key === modKey)
+
+    if (inUse && modIndex === -1) {
+        this._modifiers.push(modKey)
+    } else if (!inUse && modIndex > -1) {
+      this._modifiers.splice(modIndex, 1)
+    }
   }
 }
 
@@ -117,20 +162,20 @@ class Cat extends Player {
     }
     this._modifier = {
       takeSweetTime: new Modifier(
-        MODIFIER_TYPE.OFFENSE, 'Take Sweet Time', 15,
-        'Irritate the human by testing their patience'
+        MODIFIER_TYPE.OFFENSE, 'Take Sweet Time', 5,
+        'Irritate the human by testing their patience', 1, 2
       ),
       ignoreHuman: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Ignore Human', 10,
-        'Lower the human\'s confidence by making them feel unimportant'
+        'Lower the human\'s confidence by making them feel unimportant', 2, 1
       ),
       purr: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Purrrrrr...', 15,
-        'Make the human totally let their guard down'
+        'Make the human totally let their guard down', 3, 1
       ),
       bolt: new Modifier(
         MODIFIER_TYPE.DEFENSE, 'Try to escape', 4,
-        'With no indication... Twist and bolt!'
+        'With no indication... Twist and bolt!', 1, 1
       )
     }
   }
@@ -158,28 +203,28 @@ class Human extends Player {
     }
     this._modifier = {
       giveCatNip: new Modifier(
-        MODIFIER_TYPE.OFFENSE, 'Give the kitty some dope', 15,
-        'Subdue the cat with an inhalent'
+        MODIFIER_TYPE.OFFENSE, 'Give the kitty some dope', 5,
+        'Subdue the cat with an inhalent', 1, 2
       ),
       useLaser: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Use laser pointer', 10,
-        'Immeadiatly divert the cats attention (Fully)'
+        'Immeadiatly divert the cats attention (Fully)', 2, 1
       ),
       openBox: new Modifier(
         MODIFIER_TYPE.OFFENSE, 'Catdoras Box', 15,
-        'Spark the cat\'s curiosity by oening a box'
+        'Spark the cat\'s curiosity by oening a box', 3, 1
       ),
       sleveDown: new Modifier(
         MODIFIER_TYPE.DEFENSE, 'Armor', 4,
-        'Roll your sleve down to protect from scratches'
+        'Roll your sleve down to protect from scratches', 1, 2
       )
     }
   }
 }
 
 
-let cat = new Cat('Tom', 100)
-let human = new Human('Tim', 100)
+let cat = new Cat('Cat', 100)
+let human = new Human('Human', 100)
 
 // http://bcw-sandbox.herokuapp.com/api/cars
 
@@ -192,7 +237,7 @@ function setBattleArenaImage(attacker) {
   }
 
   battleArena.style.backgroundImage = `url('${url}')`
-  $('#battle-arena').animate({opacity: '1'}, 250)
+  $('#battle-arena').animate({ opacity: '1' }, 250)
 }
 
 function attack(event, attacker, type) {
@@ -200,14 +245,28 @@ function attack(event, attacker, type) {
 
   setBattleArenaImage(attacker)
 
-
-
   switch (attacker) {
     case 'human':
-      human.attack(type)
+      human.attack(type, cat)
       break
     case 'cat':
-      cat.attack(type)
+      cat.attack(type, human)
       break
   }
 }
+
+function drawModifiers() {
+  document.getElementById('human-mods').innerHTML = human.Template
+  document.getElementById('cat-mods').innerHTML = cat.Template
+}
+
+function onModChange(event, playerName, modKey) {
+  switch (playerName) {
+    case 'Cat':
+      cat.useMod(modKey)
+    case 'Human':
+      human.useMod(modKey)
+  }
+}
+
+drawModifiers()

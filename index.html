@@ -21,52 +21,64 @@
   <div class="container-fluid">
     <div class="row">
       <div class="test col-md-3">
-        <div class="card"">
-          <div id="human" class="player human"></div>
-          <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-              content.
-            </p>
-            <div class="btn-group" role="group" aria-label="Basic example">
-              <button onclick="attack(event, 'human', 'pet')" type="button" class="btn btn-secondary">Pet</button>
-              <button onclick="attack(event, 'human', 'brush')" type="button" class="btn btn-secondary">Brush</button>
-              <button onclick="attack(event, 'human', 'grab')" type="button" class="btn btn-secondary">Grab</button>
-              <button onclick="attack(event, 'human', 'push-down')" type="button" class="btn btn-secondary">Push Down</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="test col-md-6 couch">
-        <div id="battle-arena">
-          <div id="attack-object"></div>
-        </div>
-      </div>
-      <div class="test col-md-3">
-        <div class="card"">
-                  <div id=" human cat" class="player cat"></div>
+        <div class="card border-0"">
+          <div id=" human" class="player human"></div>
         <div class="card-body">
           <h5 class="card-title">Card title</h5>
           <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
             content.
           </p>
           <div class="btn-group" role="group" aria-label="Basic example">
-            <button onclick="attack(event, 'cat', 'scratch')" type="button" class="btn btn-secondary">Scratch</button>
-            <button onclick="attack(event, 'cat', 'bite')" type="button" class="btn btn-secondary">Bite</button>
-            <button onclick="attack(event, 'cat', 'cat-grab')" type="button" class="btn btn-secondary">Grab</button>
-            <button onclick="attack(event, 'cat', 'grab-and-kick')" type="button" class="btn btn-secondary">Grab & Kick</button>
+            <button onclick="attack(event, 'human', 'pet')" type="button" class="btn btn-secondary">Pet</button>
+            <button onclick="attack(event, 'human', 'brush')" type="button" class="btn btn-secondary">Brush</button>
+            <button onclick="attack(event, 'human', 'grab')" type="button" class="btn btn-secondary">Grab</button>
+            <button onclick="attack(event, 'human', 'push-down')" type="button" class="btn btn-secondary">Push
+              Down</button>
           </div>
         </div>
+      </div>
+      <div class="row">
+        <div id="human-mods" class="col">
+
         </div>
       </div>
     </div>
+    <div class="test col-md-6 couch">
+      <div id="battle-arena">
+        <div id="attack-object"></div>
+      </div>
+    </div>
+    <div class="test col-md-3">
+      <div class="card border-0"">
+                  <div id=" human cat" class="player cat"></div>
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
+          content.
+        </p>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button onclick="attack(event, 'cat', 'scratch')" type="button" class="btn btn-secondary">Scratch</button>
+          <button onclick="attack(event, 'cat', 'bite')" type="button" class="btn btn-secondary">Bite</button>
+          <button onclick="attack(event, 'cat', 'cat-grab')" type="button" class="btn btn-secondary">Grab</button>
+          <button onclick="attack(event, 'cat', 'grab-and-kick')" type="button" class="btn btn-secondary">Grab &
+            Kick</button>
+        </div>
+      </div>
+    </div>
+      <div class="row">
+        <div id="cat-mods" class="col">
+      
+        </div>
+      </div>
+  </div>
+  </div>
   </div>
 
 
 
   <!-- jquery -->
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <!-- My JavaScript -->
   <script src="game.js"></script>
 </body>
