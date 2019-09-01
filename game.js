@@ -285,7 +285,7 @@ class Player {
       this._winCount++
       this._health = 100
       opponent.health = 100
-      modValues.template += `<h2>${this._name} Wins!</h2>`
+      modValues.template += `<br><h2>${this._name} Wins!</h2>`
     }
 
     // display opponents defense sentance
